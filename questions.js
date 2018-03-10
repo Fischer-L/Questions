@@ -176,8 +176,8 @@ export function findWord(word, board) {
     // Move to the next character.
     wordIdx++;
     let found = false;
-    // Temporarily clear this character in the board to mark it as *visited*.
-    let c = board[row][col];
+    // Temporarily *mark* this character in the board as visited.
+    const c = board[row][col];
     board[row][col] = "null";
     if (row - 1 >= 0) {
       found = searchBoard(word, wordIdx, board, row - 1, col, MAX_ROW, MAX_COL);
