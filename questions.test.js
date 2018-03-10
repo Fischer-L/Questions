@@ -66,6 +66,12 @@ describe("Q3: Merge Interval", () => {
     mergeIntervals([11, 12], intervals);
     expect(JSON.stringify(intervals)).toBe(JSON.stringify([[1, 3], [8, 9], [11, 12]]));
   });
+
+  it("should simply insert interval into an empty intervals", () => {
+    const intervals = [];
+    mergeIntervals([11, 12], intervals);
+    expect(JSON.stringify(intervals)).toBe(JSON.stringify([[11, 12]]));
+  });
 });
 
 describe("Q4: Find a Word in the Board", () => {

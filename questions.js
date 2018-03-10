@@ -51,7 +51,7 @@ export function isSquare(n) {
 export function mergeIntervals(newInterval, intervals) {
   const L = intervals.length;
   if (L == 0) {
-    intervals.push(newInterval);
+    intervals.push(newInterval.slice());
     return;
   }
   let floor = 0;
@@ -63,7 +63,7 @@ export function mergeIntervals(newInterval, intervals) {
 
   // With `lowerRange` and `upperRange`, now we know the overlapping range of `newInterval`.
   // Say, `lowerRange` is [1, 2] and `upperRange` is [5,6].
-  // The intervals from the #2 interval to the #5 interval overlap `newInterval`.
+  // The intervals from the #2 interval to the #5 interval overlap with `newInterval`.
   let overlapStart = lowerRange[1];
   let overlapEnd = upperRange[0];
   let delCount = overlapEnd - overlapStart + 1;
@@ -88,9 +88,9 @@ export function mergeIntervals(newInterval, intervals) {
    * @param n {Number} the target number
    * @param floor {Number} the index of the intervals which is the lower bound(included) for searching.
    * @param ceiling {Number} the index of the intervals which is the upper bound(included) for searching.
-   * @param intervals {Array} the sorted intervals where the search happens.
+   * @param intervals {Array} the same as the `intervals` arg of mergeIntervals`
    *
-   * @return {Array} The indexes of the 2 intervals between which n is.
+   * @return {Array} The indexes of the 2 intervals between which `n` is.
    *                 For exmaple, there is the intervals of [[1,3], [5,7], [9,11]].
    *                 Given 8, then return [1,2].
    *                 Given 2, then return [0,0].
@@ -155,7 +155,7 @@ export function findWord(word, board) {
    *     Because it is for the Q4 so put it inside the Q4.
    *
    * @param word {String} The same as `word` arg of `findWord`
-   * @param wordIdx {Interge} The index of word's character currently being tested
+   * @param wordIdx {Interge} The index of the word's character currently being tested
    * @param board {Array} The same as `board` arg of `findWord`
    * @param row {Interge} The row index of the board's character currently being tested
    * @param col {Interge} The column index of the board's character currently being tested
@@ -176,7 +176,7 @@ export function findWord(word, board) {
     // Move to the next character.
     wordIdx++;
     let found = false;
-    // Temporarily clear this character in the board to mark as *visited*.
+    // Temporarily clear this character in the board to mark it as *visited*.
     let c = board[row][col];
     board[row][col] = "null";
     if (row - 1 >= 0) {
@@ -204,12 +204,14 @@ export function findWord(word, board) {
  *
  * @param a {Interger} The interger to add
  * @param b {Interger} Another interger to add with `a`
+ *
+ * @return {Interger} The sum of `a` and `b`
  */
 export function add(a, b) {
   // We do the bit operations here.
   // Assume 5 (0101) and 9 (1001),
   // 1. 5 ^ 9 gets the not-carry bits (1100)
-  // 2. (5 & 9) then left shifting gets the carry bits (0010)
+  // 2. 5 & 9 then left shifting gets the carry bits (0010)
   // 3. (1100) & (0010) gets 0 so we know no more carry bits
   // 4. (1100) | (0010) gives 14 which is 5 + 9
   let c = 0;
