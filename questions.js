@@ -1,4 +1,3 @@
-
 /**
  * Q1. Write a function that takes a string as input and returns the string reversed. 
  * Please implement reverse function or method by yourself .
@@ -62,13 +61,13 @@ export function mergeIntervals(newInterval, intervals) {
   floor = lowerRange[1];
   let upperRange = searchIntervals(newInterval[1], floor, ceiling, intervals);
 
-  // With `lowerRange` and `upperRange`, now we know the overlapping of `newInterval`.
+  // With `lowerRange` and `upperRange`, now we know the overlapping range of `newInterval`.
   // Say, `lowerRange` is [1, 2] and `upperRange` is [5,6].
-  // The intervals from the #2 interval to the #5 intervals overlap `newInterval`.
+  // The intervals from the #2 interval to the #5 interval overlap `newInterval`.
   let overlapStart = lowerRange[1];
   let overlapEnd = upperRange[0];
   let delCount = overlapEnd - overlapStart + 1;
-  // Make a copy since the question dose expect `newInterval` gets changed.
+  // Make a copy since the question dosen't expect `newInterval` gets changed.
   // And it is good not to mutate the input args.
   let merged = newInterval.slice();
   // Should check `undefined` in case that `newInterval` falls outsisde.
@@ -83,7 +82,7 @@ export function mergeIntervals(newInterval, intervals) {
 
   /**
    * Search in the given sorted internvals, find the given number is located between which 2 intervals.
-   * ps: In case soemone wonder why put this funciton inside `mergeIntervals`.
+   * ps: In case soemone wonders why put this funciton inside `mergeIntervals`.
    *     Because it is for the Q3 so put it inside the Q3.
    * 
    * @param n {Number} the target number
@@ -118,4 +117,106 @@ export function mergeIntervals(newInterval, intervals) {
     }
     return [ ceiling, floor ];
   }
+}
+
+/**
+ * Q4. Given a 2D board and a word, find if the word exists in the grid. 
+ * For example,
+ * Given board = 
+ * [ 
+ *   ['A','B','C','E'], 
+ *   ['S','F','C','S'], 
+ *   ['A','D','E','E'] 
+ * ] 
+ * word = "ABCCED", -> returns true, 
+ * word = "SEE", -> returns true, 
+ * word = "ABCB", -> returns false. 
+ *
+ * @param word {String} The word to find
+ * @param board {Array} the 2D board to search
+ *
+ * @return {boolean} True if found otherwise False
+ */
+export function findWord(word, board) {
+  const MAX_ROW = board.length;
+  const MAX_COL = MAX_ROW ? board[0].length : 0;
+  for (let row = 0; row < MAX_ROW; ++row) {
+    for (let col = 0; col < MAX_COL; ++col) {
+      if (searchBoard(word, 0, board, row, col, MAX_ROW, MAX_COL)) {
+        return true;
+      } 
+    }
+  }
+  return false;
+
+  /**
+   * Recursively search the board to see if a word exists inside the board.
+   * ps: In case soemone wonders why put this funciton inside `findWord`.
+   *     Because it is for the Q4 so put it inside the Q4.
+   *
+   * @param word {String} The same as `word` arg of `findWord`
+   * @param wordIdx {Interge} The index of word's character currently being tested
+   * @param board {Array} The same as `board` arg of `findWord`
+   * @param row {Interge} The row index of the board's character currently being tested
+   * @param col {Interge} The column index of the board's character currently being tested
+   * @param MAX_ROW {Interge} The max of `row` can be (not included)
+   * @param MAX_COL {Interge} The max of `col` can be (not included)
+   *
+   * @return {boolean} True if found otherwise False
+   */
+  function searchBoard(word, wordIdx, board, row, col, MAX_ROW, MAX_COL) {
+    if (word && wordIdx === word.length) {
+      return true;
+    }
+    if (!word || word[wordIdx] !== board[row][col]) {
+      return false;
+    }
+
+    // Found the current character of the word inside the board.
+    // Move to the next character.
+    wordIdx++;
+    let found = false;
+    // Temporarily clear this character in the board to mark as *visited*.
+    let c = board[row][col];
+    board[row][col] = "null";
+    if (row - 1 >= 0) {
+      found = searchBoard(word, wordIdx, board, row - 1, col, MAX_ROW, MAX_COL);
+    }
+    if (!found && row + 1 < MAX_ROW) {
+      found = searchBoard(word, wordIdx, board, row + 1, col, MAX_ROW, MAX_COL);
+    }
+    if (!found && col - 1 >= 0) {
+      found = searchBoard(word, wordIdx, board, row, col - 1, MAX_ROW, MAX_COL);
+    }
+    if (!found && col + 1 < MAX_COL) {
+      found = searchBoard(word, wordIdx, board, row, col + 1, MAX_ROW, MAX_COL);
+    }
+    // Restore the character.
+    board[row][col] = c;
+    return found;
+  }
+}
+
+/**
+ * Q5. Calculate the sum of two integers a and b, but you are not allowed to use the operator + and -. 
+ * Example:
+ * Given a = 1 and b = 2, return 3. 
+ *
+ * @param a {Interger} The interger to add
+ * @param b {Interger} Another interger to add with `a`
+ */
+export function add(a, b) {
+  // We do the bit operations here.
+  // Assume 5 (0101) and 9 (1001),
+  // 1. 5 ^ 9 gets the not-carry bits (1100)
+  // 2. (5 & 9) then left shifting gets the carry bits (0010)
+  // 3. (1100) & (0010) gets 0 so we know no more carry bits
+  // 4. (1100) | (0010) gives 14 which is 5 + 9
+  let c = 0;
+  while ((a & b) !== 0) {
+    c = (a & b) << 1;
+    a = a ^ b;
+    b = c;
+  }
+  return a | b;
 }
